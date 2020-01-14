@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bikes in Málaga</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="http://127.0.0.1:5001/home/">Home</a>
+            <a class="brand" href="http://127.0.0.1:5001/bicilane/">Bici Lanes</a>
+            <a class="brand" href="http://127.0.0.1:5001/bicipark/">Bici Parkings</a>
+           <a class="brand" href="#"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <form class="form-signin" action="http://127.0.0.1:5001/" method="GET">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="well well-sm">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-8">
+                                <h2>{{logUser['nombre']}}</h2>
+                                <p>
+                                    <i class="glyphicon glyphicon-envelope"></i> {{logUser['email']}}
+                                    <br />
+                                    <i class="glyphicon glyphicon-globe"></i> {{logUser['rol']}}</a>
+                                    <br />
+                                </p>
+                                </br>
+                                <button class="btn btn-lg btn-primary" type="submit">Log out</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="main" class="container">
+
+        <h1>Bici Lanes</h1>
+        
+        <table style="width:100%" border="1">
+          <tr>
+            <th>Creation Date</th>
+            <th>Content</th>
+          </tr>
+          {% for comentario in comentarios %}
+              <tr>
+                <td>{{ comentario.fechaCreacion }}</td>
+                <td>{{ comentario.contenido }}</td>
+              </tr>
+          {% endfor %}
+        </table>
+
+    </div>
+
+
+</body>
+</html>
