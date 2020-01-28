@@ -26,15 +26,15 @@ def home():
         usuario = response.get_response().read()
         session['usuario'] = usuario
 
-        url_weather = url_client + "/IWeb/weather/"
-        response_weather = Connection(url_weather)
-        data_weather = json.loads(response_weather.get_response().read())
+        #url_weather = url_client + "/IWeb/weather/"
+        #response_weather = Connection(url_weather)
+        #data_weather = json.loads(response_weather.get_response().read())
         #print(data_weather)
 
     except RuntimeError as exc:
         mensaje, codigo = exc.args
         return render_template("error.html", mensaje=mensaje, codigo=codigo)
-    return render_template('index.html',logUser=json.loads(usuario),weather=data_weather)
+    return render_template('index.html',logUser=json.loads(usuario))#,weather=data_weather)
 
 @app.route('/home/') #, methods=['GET', 'POST'])
 def home_home():
