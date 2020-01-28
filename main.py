@@ -15,8 +15,10 @@ from ListCommentaryXmlToJson import ListCommentaryXmlToJson
 app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(16)
 
-#url_client = "http://127.0.0.1:5000"
-url_client = "https://iwebfinal.appspot.com"
+url_client = "http://127.0.0.1:5000"
+#url_client = "https://iwebfinal.appspot.com"
+url_cliente = "http://127.0.0.1:5001"
+#url_cliente = "https://iwebcliente.appspot.com"
 
 @app.route('/') #, methods=['GET', 'POST'])
 def home():
@@ -34,12 +36,12 @@ def home():
     except RuntimeError as exc:
         mensaje, codigo = exc.args
         return render_template("error.html", mensaje=mensaje, codigo=codigo)
-    return render_template('index.html',logUser=json.loads(usuario))#,weather=data_weather)
+    return render_template('index.html',logUser=json.loads(usuario),url_client=url_cliente)#,weather=data_weather)
 
 @app.route('/home/') #, methods=['GET', 'POST'])
 def home_home():
     usuario = session['usuario']
-    return render_template('index.html',logUser=json.loads(usuario))
+    return render_template('index.html',logUser=json.loads(usuario),url_client=url_cliente)
 
 
 @app.route('/email', methods=['GET', 'POST'])
@@ -63,7 +65,7 @@ def home_email():
             print(codigo)
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
         session['usuario'] = usuario
-    return render_template('index.html',logUser=json.loads(usuario))
+    return render_template('index.html',logUser=json.loads(usuario),url_client=url_cliente)
 
 
 @app.route("/profile/")
@@ -98,14 +100,14 @@ def profile():
             print(codigo)
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
 
-    return render_template("profile.html",logUser=json.loads(usuario), comentarios=json.loads(comentarioList))
+    return render_template("profile.html",logUser=json.loads(usuario), comentarios=json.loads(comentarioList),url_client=url_cliente)
 
 
 @app.route("/signup/", methods=['GET','POST'])
 def signup():
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template("signup.html",logUser=json.loads(usuario))
+    return render_template("signup.html",logUser=json.loads(usuario),url_client=url_cliente, url_server=url_client)
 
 
 
@@ -121,7 +123,7 @@ def lane():
     lane = response.get_response().read()
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template('lane.html',lista=json.loads(lane),logUser=json.loads(usuario))  #, usuarios=json.loads(usuarios))
+    return render_template('lane.html',lista=json.loads(lane),logUser=json.loads(usuario),url_client=url_cliente)  #, usuarios=json.loads(usuarios))
 
 @app.route('/bicilane/lane/<int:id>') #, methods=['GET', 'POST'])
 def find_lane_by_id(id):
@@ -142,7 +144,7 @@ def find_lane_by_id(id):
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template('detail_lane.html',bicilane=json.loads(lane),coordinates=json.loads(coordinates),description=json.loads(description),logUser=json.loads(usuario))
+    return render_template('detail_lane.html',bicilane=json.loads(lane),coordinates=json.loads(coordinates),description=json.loads(description),logUser=json.loads(usuario),url_client=url_cliente)
 
 
 # Aparcamientos de bici
@@ -161,7 +163,7 @@ def parking():
 
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template('parking.html',lista=json.loads(parking),logUser=json.loads(usuario))
+    return render_template('parking.html',lista=json.loads(parking),logUser=json.loads(usuario),url_client=url_cliente)
 
 @app.route('/bicipark/parking/<int:id>') #, methods=['GET', 'POST'])
 def find_parking_by_id(id):
@@ -177,10 +179,9 @@ def find_parking_by_id(id):
             print(codigo)
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
     parking = response.get_response().read()
-    return render_template('detail_parking.html',biciparking=json.loads(parking),logUser=json.loads(usuario))
+    return render_template('detail_parking.html',biciparking=json.loads(parking),logUser=json.loads(usuario),url_client=url_cliente)
 
 
 
 if __name__ == '__main__':
-    #app.run(debug=True, host='127.0.0.1', port=5001)
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5001)

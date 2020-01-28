@@ -15,15 +15,15 @@
 <body>
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="http://127.0.0.1:5001/home/">Home</a>
-            <a class="brand" href="http://127.0.0.1:5001/bicilane/">Bici Lanes</a>
-            <a class="brand" href="http://127.0.0.1:5001/bicipark/">Bici Parkings</a>
-           <a class="brand" href="#"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
+          <a class="brand" href="{{url_client}}/home/">Home</a>
+          <a class="brand" href="{{url_client}}/bicilane/">Bici Lanes</a>  /bicipark/
+          <a class="brand" href="{{url_client}}/bicipark/">Bici Parkings</a>
+          <a class="brand" href="#"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
         </div>
     </div>
-    
+
     <div class="container">
-        <form class="form-signin" action="http://127.0.0.1:5001/" method="GET">
+        <form class="form-signin" action="{{url_client}}/" method="GET">
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="well well-sm">
@@ -38,7 +38,7 @@
                                 </p>
                                 </br>
                                 <button class="btn btn-lg btn-primary" type="submit">Log out</button>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
     <div id="main" class="container">
 
         <h1>Bici Lanes</h1>
-        
+
         <table style="width:100%" border="1">
           <tr>
             <th>Creation Date</th>

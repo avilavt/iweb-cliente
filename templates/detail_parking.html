@@ -22,10 +22,10 @@
 <body>
     <div class="navbar">
         <div class="navbar-inner">
-          <a class="brand" href="http://127.0.0.1:5001/home/">Home</a>
-          <a class="brand" href="http://127.0.0.1:5001/bicilane/">Bici Lanes</a>
-          <a class="brand" href="http://127.0.0.1:5001/bicipark/">Bici Parkings</a>  
-          <a class="brand" href="http://127.0.0.1:5001/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
+          <a class="brand" href="{{url_client}}/home/">Home</a>
+          <a class="brand" href="{{url_client}}/bicilane/">Bici Lanes</a>
+          <a class="brand" href="{{url_client}}/bicipark/">Bici Parkings</a>
+          <a class="brand" href="{{url_client}}/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
         </div>
     </div>
     <div id="main" class="container">
@@ -52,7 +52,7 @@
 			           '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
 			              'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 		                  id: 'mapbox/streets-v11'}).addTo(mymap);
-         
+
           L.marker([{{biciparking['coordinates'][0]['latitud']}},{{biciparking['coordinates'][0]['longitud']}}]).addTo(mymap).bindPopup("<b>{{biciparking['name']}}</b><br />{{biciparking['description'][0]['ubication']}}<br /> Latitude: {{biciparking['coordinates'][0]['latitud']}} <br /> Longitude: {{biciparking['coordinates'][0]['longitud']}}").openPopup();
         </script>
     </div>

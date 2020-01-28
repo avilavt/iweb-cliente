@@ -14,10 +14,10 @@
 <body>
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="http://127.0.0.1:5001/home/">Home</a>
-            <a class="brand" href="http://127.0.0.1:5001/bicilane/">Bici Lanes</a>
-            <a class="brand" href="http://127.0.0.1:5001/bicipark/">Bici Parkings</a>
-            <a class="brand" href="http://127.0.0.1:5001/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
+            <a class="brand" href="{{url_client}}/home/">Home</a>
+            <a class="brand" href="{{url_client}}/bicilane/">Bici Lanes</a>
+            <a class="brand" href="{{url_client}}/bicipark/">Bici Parkings</a>
+            <a class="brand" href="{{url_client}}/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
         </div>
     </div>
 
@@ -55,7 +55,7 @@
     <script >
       function signup()
       {
-        const urlSignUp = "http://127.0.0.1:5000/IWeb/webresources/entity.usuario/post/";
+        const urlSignUp = "{{url_server}}/IWeb/webresources/entity.usuario/post/";
 
         var nombre = document.getElementById('name').value;
         var correo = document.getElementById('email').value;

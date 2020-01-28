@@ -21,25 +21,25 @@
 <body>
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="http://127.0.0.1:5001/home/">Home</a>
+            <a class="brand" href="{{url_client}}/home/">Home</a>
             <a class="brand" href="#"> Bici Lanes</a>
-            <a class="brand" href="http://127.0.0.1:5001/bicipark/">Bici Parkings</a>  
-            <a class="brand" href="http://127.0.0.1:5001/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>            
+            <a class="brand" href="{{url_client}}/bicipark/">Bici Parkings</a>
+            <a class="brand" href="{{url_client}}/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
         </div>
     </div>
     <div id="main" class="container">
 
         <h1>Bici Lanes</h1>
-        
+
         <table style="width:100%" border="1">
           <tr>
             <th>Name</th>
             <th>Kilometers</th>
-            <th>Coordinates <br/> (latitude : longitude)</th> 
+            <th>Coordinates <br/> (latitude : longitude)</th>
           </tr>
           {% for elemento in lista %}
               <tr>
-                <td> <a href="http://127.0.0.1:5001/bicilane/lane/{{ elemento.ogc_fid }}">
+                <td> <a href="{{url_client}}/bicilane/lane/{{ elemento.ogc_fid }}">
                   {{ elemento.name.strip() }}</a> </td>
                 <td class="td-center">{{ '{:02.6f}'.format(elemento.description[0].kilometers) }}</td>
                 <td class="td-center">{{ '{:02.6f}'.format(elemento.coordinates[0].latitud)}} : {{ '{:02.6f}'.format(elemento.coordinates[0].longitud) }}</td>
@@ -63,7 +63,7 @@
 <div id="users" class="container">
 
   <h2>Users</h2>
-  
+
   <table style="width:100%" border="1">
     <tr>
       <th>Name</th>
