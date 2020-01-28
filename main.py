@@ -15,8 +15,8 @@ from ListCommentaryXmlToJson import ListCommentaryXmlToJson
 app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(16)
 
-url_client = "http://127.0.0.1:5000"
-#url_client = "https://iwebfinal.appspot.com"
+#url_client = "http://127.0.0.1:5000"
+url_client = "https://iwebfinal.appspot.com"
 
 @app.route('/') #, methods=['GET', 'POST'])
 def home():
