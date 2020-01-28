@@ -19,14 +19,16 @@ app.secret_key = secrets.token_urlsafe(16)
 @app.route('/') #, methods=['GET', 'POST'])
 def home():
     try:
-        url = "iwebfinal.appspot.com/IWeb/webresources/entity.usuario/0"
+        url = "http://127.0.0.1:5000/IWeb/webresources/entity.usuario/0"
         response = Connection(url)
         usuario = response.get_response().read()
         session['usuario'] = usuario
-        url_weather = "iwebfinal.appspot.com/IWeb/weather/"
+
+        url_weather = "http://127.0.0.1:5000/IWeb/weather/"
         response_weather = Connection(url_weather)
         data_weather = json.loads(response_weather.get_response().read())
-        print(data_weather)
+        #print(data_weather)
+
     except RuntimeError as exc:
         mensaje, codigo = exc.args
         return render_template("error.html", mensaje=mensaje, codigo=codigo)
@@ -45,7 +47,7 @@ def home_email():
         response = request.form
         email = response['email']
         try:
-            url = "iwebfinal.appspot.com/IWeb/webresources/entity.usuario/email/" + str("\""+ email + "\"")
+            url = "http://127.0.0.1:5000/IWeb/webresources/entity.usuario/email/" + str("\""+ email + "\"")
             print(url)
             response = Connection(url)
             #if response.get_type_response() == "application/xml":
@@ -69,7 +71,7 @@ def profile():
         usuario = session['usuario']
         userId = json.loads(usuario)
         try:
-            url = "iwebfinal.appspot.com/IWeb/webresources/entity.comentario/email/" + str("\""+ userId['email'] + "\"")
+            url = "http://127.0.0.1:5000/IWeb/webresources/entity.comentario/email/" + str("\""+ userId['email'] + "\"")
             print("La url es : " + url)
             response = Connection(url)
             print("Response: " + str(response))
@@ -79,13 +81,13 @@ def profile():
             elif response.get_type_response() == "application/json":
                 comentarioList = response.get_response().read()
             print("Cantidad de comentarios: " + str(len(comentarioList)))
-            url = "iwebfinal.appspot.com/IWeb/webresources/entity.comentario/count/" + str(userId['idUsuario'])
+            url = "http://127.0.0.1:5000/IWeb/webresources/entity.comentario/count/" + str(userId['idUsuario'])
             response = Connection(url)
             quantity = response.get_response().read()
             comentarios = json.loads(quantity)['total']
             print(comentarios)
             if comentarios == 0:
-                    url = " iwebfinal.appspot.com/IWeb/webresources/entity.comentario/0"
+                    url = " http://127.0.0.1:5000/IWeb/webresources/entity.comentario/0"
                     response = Connection(url)
                     comentarioList = response.get_response().read()
         except RuntimeError as exc:
@@ -96,19 +98,19 @@ def profile():
 
     return render_template("profile.html",logUser=json.loads(usuario), comentarios=json.loads(comentarioList))
 
-'''
-@app.route("/signup/")
+
+@app.route("/signup/", methods=['GET','POST'])
 def signup():
     if 'usuario' in session:
         usuario = session['usuario']
     return render_template("signup.html",logUser=json.loads(usuario))
-'''
+
 
 
 @app.route('/bicilane/') #, methods=['GET', 'POST'])
 def lane():
     try:
-        response = Connection('iwebfinal.appspot.com/opendata/api/bicilane/point')
+        response = Connection('http://localhost:5000/opendata/api/bicilane/point')
     except RuntimeError as exc:
             mensaje, codigo = exc.args
             print(mensaje)
@@ -122,13 +124,13 @@ def lane():
 @app.route('/bicilane/lane/<int:id>') #, methods=['GET', 'POST'])
 def find_lane_by_id(id):
     try:
-        url = 'iwebfinal.appspot.com/opendata/api/bicilane/find_by_ogc_fid/' + str(id)
+        url = 'http://localhost:5000/opendata/api/bicilane/find_by_ogc_fid/' + str(id)
         response = Connection(url)
         lane = response.get_response().read()
-        url2 = 'iwebfinal.appspot.com/opendata/api/bicilane/get_list_coordinates/' + str(id+1)
+        url2 = 'http://localhost:5000/opendata/api/bicilane/get_list_coordinates/' + str(id+1)
         response = Connection(url2)
         coordinates = response.get_response().read()
-        url3 = 'iwebfinal.appspot.com/opendata/api/bicilane/get_description/' + str(id+1)
+        url3 = 'http://localhost:5000/opendata/api/bicilane/get_description/' + str(id+1)
         response = Connection(url3)
         description = response.get_response().read()
     except RuntimeError as exc:
@@ -147,7 +149,7 @@ def find_lane_by_id(id):
 @app.route('/bicipark/') #, methods=['GET', 'POST'])
 def parking():
     try:
-        response = Connection('iwebfinal.appspot.com/opendata/api/bicipark')
+        response = Connection('http://localhost:5000/opendata/api/bicipark')
     except RuntimeError as exc:
             mensaje, codigo = exc.args
             print(mensaje)
@@ -164,7 +166,7 @@ def find_parking_by_id(id):
     if 'usuario' in session:
         usuario = session['usuario']
 
-    url = 'iwebfinal.appspot.com/opendata/api/bicipark/find_by_ogc_fid/' + str(id)
+    url = 'http://localhost:5000/opendata/api/bicipark/find_by_ogc_fid/' + str(id)
     try:
         response = Connection(url)
     except RuntimeError as exc:
@@ -178,5 +180,4 @@ def find_parking_by_id(id):
 
 
 if __name__ == '__main__':
-    #app.run(debug=True, host='127.0.0.1', port=5001)
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5001)

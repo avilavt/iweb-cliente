@@ -20,7 +20,7 @@
             <a class="brand" href="http://127.0.0.1:5001/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
         </div>
     </div>
-
+    <!-- url = "http://127.0.0.1:5000/IWeb/webresources/entity.usuario/" -->
     <div id="main" class="container">
         <div class="span3">
             <h2>Sign Up</h2>
@@ -37,32 +37,18 @@
             </form>
         </div>
     </div>
-    <p id="resultado"></p>
-    <p id="resultado2"></p>
-    <p id="resultado3"></p>
-    <p id="resultado4"></p>
-    <p id="resultado5"></p>
-    <p id="resultado6"></p>
-    <p id="resultado7"></p>
-    <p id="resultado8"></p>
-    <p id="resultado9"></p>
-    <p id="resultado10"></p>
-    <p id="resultado11"></p>
-    <p id="resultado12"></p>
-    <p id="resultado13"></p>
-
-
+    <p id="resultado">abc </p>
     <script >
       function signup()
       {
-        const urlSignUp = "http://127.0.0.1:5000/IWeb/webresources/entity.usuario/post/";
+        const urlSignUp = "http://127.0.0.1:5000/IWeb/webresources/entity.usuario/";
 
         var nombre = document.getElementById('name').value;
         var correo = document.getElementById('email').value;
         var rol = document.getElementById('role').value;
 
         //document.getElementById("name").value = "";
-        var datajson = JSON.stringify({"nombre":nombre,"email":correo,"rol":rol});
+        var datajson = '{\"nombre\":\"'+nombre+'\",\"email\":\"'+correo+'\",\"rol\":\"'+rol+'\"}';
         document.getElementById("resultado").innerHTML = datajson;
 
         if(nombre == "" || correo == "" || rol == "")
@@ -70,21 +56,20 @@
           document.getElementById("resultado").innerHTML = "Error: data incomplete";
           return;
         }
-        document.getElementById("resultado2").innerHTML = datajson + ' -> confirmado que no estan vacios los campos';
 
-        var req = new XMLHttpRequest();
-        document.getElementById("resultado3").innerHTML = datajson + " -> " + ' creo request como new XMLHttpRequest';
+        document.getElementById("resultado").innerHTML = datajson;
 
-        req.open("POST",urlSignUp,true);
-        document.getElementById("resultado4").innerHTML = datajson + " -> " + ' abro el request como post';
+        var request = new XMLHttpRequest();
 
-        req.setRequestHeader("Content-type","application/json");
-        document.getElementById("resultado5").innerHTML = datajson + " -> " + ' coloco el tipo de contenido en la cabecera';
-
-        req.onreadystatechange = function()
+        request.open("POST",urlSignUp);
+        request.setsetRequestHeader("Content-Type","application/json");
+        document.getElementById("resultado").innerHTML = datajson + " -> " + this.readyState;
+        request.onreadystatechange = function()
         {
 
-          if (xhr.readyState == 4 && xhr.status == 200)
+          if(this.reareadyState == XMLH.DONE)
+          {
+            if(this.ststatus == 201)
             {
               document.getElementById("resultado").innerHTML = "User created successfully";
             }
@@ -92,9 +77,9 @@
             {
               alert('Error: status code:' + request.status);
             }
-
+          }
         }
-        req.send(datajson);
+        request.send(datajson);
       }
     </script>
 
