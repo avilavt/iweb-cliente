@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bikes in Málaga</title>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="500249689253-vi46l6bto0m1i0pa7iuk4h11vupl5bse.apps.googleusercontent.com">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="#">Home</a>
+            <a class="brand" href="{{url_client}}/bicilane/">Bici Lanes</a>
+            <a class="brand" href="{{url_client}}/bicipark/">Bici Parkings</a>
+            <a class="brand" href="{{url_client}}/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
+        </div>
+    </div>
+
+
+    <div id="main" class="container">
+        <form class="form-signin" action="{{url_client}}/email" method="POST">
+            <h2 class="h3 mb-3 font-weight-normal">Please sign in</h2>
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" name="email" class="form-control" placeholder="" required autofocus>
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+    </div>
+
+    <div id="weather" class="container">
+
+    </div>
+
+
+    <div id="main" class="container">
+        <form class="form-signin" action="{{url_client}}/signup/" method="GET">
+            <label for="btn_signup" class="sr-only">Create a new account:</label>
+            <button id="btn_signup" class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        </form>
+    </div>
+
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+
+</body>
+</html>
