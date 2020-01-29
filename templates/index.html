@@ -21,7 +21,7 @@
         </div>
     </div>
 
-
+<!--
     <div id="main" class="container">
         <form class="form-signin" action="{{url_client}}/email" method="POST">
             <h2 class="h3 mb-3 font-weight-normal">Please sign in</h2>
@@ -31,6 +31,7 @@
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         </form>
     </div>
+-->
 
     <div id="weather" class="container">
 
@@ -46,6 +47,19 @@
 
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
+    <script>
+    function onSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+      var req = new XMLHttpRequest();
+      const urlSignUp = "{{url_server}}/email";
+      req.open("GET",urlEmail,true);
+      req.send();
+    }
+    </script>
 
 </body>
 </html>
