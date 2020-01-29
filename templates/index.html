@@ -55,9 +55,10 @@
       console.log('Image URL: ' + profile.getImageUrl());
       console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
       var req = new XMLHttpRequest();
-      const urlSignUp = "{{url_server}}/email";
-      req.open("GET",urlEmail,true);
-      req.send();
+      const urlEmail = "{{url_server}}/email";
+      req.open("POST",urlEmail,true);
+      var datajson = JSON.stringify({"email":profile.getEmail()});
+      req.send(datajson);
     }
     </script>
 
