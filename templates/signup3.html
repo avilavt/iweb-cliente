@@ -24,7 +24,7 @@
     <div id="main" class="container">
         <div class="span3">
             <h2>Sign Up</h2>
-            <form  id="userForm" onSubmit="return false" method="POST">
+            <form  id="userForm" onSubmit="return false">
                 <label for="name">Name</label>
                 <input id="name" type="text" name="name" class="span3">
                 <label for="email">Email Address</label>
@@ -38,59 +38,60 @@
         </div>
     </div>
     <p id="resultado"></p>
+    <p id="resultado2"></p>
+    <p id="resultado3"></p>
+    <p id="resultado4"></p>
+    <p id="resultado5"></p>
+    <p id="resultado6"></p>
+    <p id="resultado7"></p>
+    <p id="resultado8"></p>
+    <p id="resultado9"></p>
+    <p id="resultado10"></p>
+    <p id="resultado11"></p>
+    <p id="resultado12"></p>
+    <p id="resultado13"></p>
+
+
     <script >
       function signup()
       {
-        document.getElementById("resultado").innerHTML = "";
+        const urlSignUp = '{{url_server}}/IWeb/webresources/entity.usuario/post/';
 
-        var urlSignUp = '{{url_server}}/IWeb/webresources/entity.usuario/post/';
         var nombre = document.getElementById('name').value;
         var correo = document.getElementById('email').value;
         var rol = document.getElementById('role').value;
 
+
+
         if(nombre == "" || correo == "" || rol == "")
         {
-          document.getElementById("resultado").innerHTML = "Error: incomplete data";
+          document.getElementById("resultado").innerHTML = "Error: data incomplete";
           return;
         }
 
-        console.log('Url post:' + urlSignUp);
+        var req = new XMLHttpRequest();
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', urlSignUp);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Access-Control-Allow-Origin','*');
+        req.open('POST',urlSignUp);
 
+        req.setRequestHeader('Content-Type','application/json');
 
-
-
-        var obj = {nombre: nombre, email: correo, rol: rol};
-        var datajson = JSON.stringify(obj);
-        xhr.send(datajson);
-
-        xhr.onload = function()
+        req.onload = function()
         {
-          if (xhr.status == 201)
-          {
-            document.getElementById("name").value = "";
-            document.getElementById("email").value = "";
-            document.getElementById("role").value = "";
-            document.getElementById("resultado").innerHTML = "User created successfully";
-          }
-          else if(xhr.status == 400)
-          {
-            var error = xhr.response;
 
-            document.getElementById("resultado").innerHTML = "Error: the email is already registered";
-          }
-          else
-          {
-            alert('Error: status code:' + xhr.status);
-          }
-        };
+          if (xhr.status == 201)
+            {
+              document.getElementById("resultado").innerHTML = "User created successfully";
+            }
+            else
+            {
+              alert('Error: status code:' + request.status);
+            }
+
+        }
+        document.getElementById("resultado").innerHTML = nombre;
+        req.send({"name" : <nombre>});
       }
     </script>
-
 
 
 </body>
