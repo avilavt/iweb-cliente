@@ -14,14 +14,14 @@
 <body>
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="#">Home</a>
+            <a class="brand" href="{{url_client}}/home/">Home</a>
             <a class="brand" href="{{url_client}}/bicilane/">Bici Lanes</a>
             <a class="brand" href="{{url_client}}/bicipark/">Bici Parkings</a>
             <a class="brand" href="{{url_client}}/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
         </div>
     </div>
 
-
+<!--
     <div id="main" class="container">
         <form class="form-signin" action="{{url_client}}/email" method="POST">
             <h2 class="h3 mb-3 font-weight-normal">Please sign in</h2>
@@ -31,19 +31,21 @@
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         </form>
     </div>
-
-
+-->
+<div id="main" class="container">
     <div id="weather" class="container">
 
     </div>
-
+</div>
 
     <div id="main" class="container">
-        <form class="form-signin" action="{{url_client}}/signup/" method="GET">
+        <form class="form-signup" action="{{url_client}}/signup/" method="GET">
             <label for="btn_signup" class="sr-only">Create a new account:</label>
             <button id="btn_signup" class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
         </form>
     </div>
+
+    
 
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
@@ -57,6 +59,7 @@
       var req = new XMLHttpRequest();
       const urlEmail = "{{url_server}}/email";
       req.open("POST",urlEmail,true);
+      req.setRequestHeader('Access-Control-Allow-Origin','*');
       var datajson = JSON.stringify({"email":profile.getEmail()});
       req.send(datajson);
     }

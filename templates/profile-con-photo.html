@@ -21,6 +21,9 @@
         </div>
     </div>
 
+    
+    <img src="data:image/gif;base64,{{photo}}">
+
     <div class="container">
         <form class="form-signin" action="{{url_client}}/" method="GET">
             <div class="row">
@@ -46,6 +49,8 @@
         </form>
     </div>
 
+
+
     </script>
     <div class="container">
         <form>
@@ -57,6 +62,10 @@
                                 <h2>Load photo</h2>
                                 <input type="file" onchange="previewFile()"><br>
                                 <img src="" height="200" alt="Image preview...">
+                                  <form  id="saveForm" onSubmit="return false" method="POST">
+                                    <input type="button" id="savebutton" onclick="save_image()"
+                                     value="Save image" class="btn btn-primary pull-right">
+                                  </form>
                             </div>
                         </div>
                     </div>
@@ -65,22 +74,7 @@
         </form>
     </div>
 
-    <div id="main" class="container">
-        <div class="span3">
-            <h2>Sign Up</h2>
-            <form  id="saveForm" onSubmit="return false" method="POST">
-              <input type="button" id="savebutton" onclick="save_image()"
-                    value="Save image" class="btn btn-primary pull-right">
-                <div class="clearfix">
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-
     <input type="hidden" id="filename" name="filename" value="no_image.png">
-    <input type="hidden" id="id_user" name="id_user" value="{{logUser['idUsuario']}}">
     <script>
     function previewFile() {
       const preview = document.querySelector('img');
@@ -104,24 +98,22 @@
       var urlSignUp = '{{url_server}}/IWeb/webresources/entity.usuario/photo/';
 
       // binary data de la imagen
-      //document.getElementById("resultado").innerHTML = "El archivo es : " +
-        //    document.getElementById("filename").value;
+      document.getElementById("resultado").innerHTML = "El archivo es : " +
+            document.getElementById("filename").value;
 
       console.log('Url post:' + urlSignUp);
       var xhr = new XMLHttpRequest();
       xhr.open('POST', urlSignUp);
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.setRequestHeader('Access-Control-Allow-Origin','*');
-      //document.getElementById("resultado2").innerHTML = 'Usuario : ' + {{logUser['idUsuario']}};
-      console.log(document.getElementById("id_user").value);
-      var obj = {idUsuario: document.getElementById("id_user").value , photo: document.getElementById("filename").value };
+      document.getElementById("resultado").innerHTML = {{logUser['idUsuario']}};
+      var obj = {id: {{logUser['idUsuario']}} , photo: document.getElementById("filename").value };
       var datajson = JSON.stringify(obj);
       xhr.send(datajson);
 
     }
     </script>
-    <p id="resultado"></p
-    <p id="resultado2"></p>
+    <p id="resultado"></p>
 
 
     <div id="main" class="container">

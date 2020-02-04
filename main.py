@@ -16,20 +16,47 @@ from ListCommentaryXmlToJson import ListCommentaryXmlToJson
 app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(16)
 
-#url_client = "http://127.0.0.1:5000"
-url_client = "https://iwebfinal.appspot.com"
-#url_cliente = "http://127.0.0.1:5001"
-url_cliente = "https://iwebcliente.appspot.com"
+url_server = "http://127.0.0.1:5000"
+#url_server = "https://iwebfinal.appspot.com"
+url_cliente = "http://127.0.0.1:5001"
+#url_cliente = "https://iwebcliente.appspot.com"
+
+title_html = '<title>Bikes in Málaga</title>'
+menu_home = '<a class="brand" href="{{url_client}}/home/">Home</a>'
+
+
+
+@app.route('/test')
+def test():
+    if request.method == 'POST':  #this block is only entered when the form is submitted
+        language = request.form.get('language')
+        framework = request.form['framework']
+
+        return '''<h1>The language value is: {}</h1>
+                  <h1>The framework value is: {}</h1>'''.format(language, framework)
+
+    return '''<form method="POST">
+                  Language: <input type="text" name="language"><br>
+                  Framework: <input type="text" name="framework"><br>
+                  <input type="submit" value="Submit"><br>
+              </form>'''
+
 
 @app.route('/') #, methods=['GET', 'POST'])
 def home():
     try:
-        url = url_client + "/IWeb/webresources/entity.usuario/0"
+        url = url_server + "/IWeb/webresources/entity.usuario/0"
         response = Connection(url)
-        usuario = response.get_response().read()
+        usuario_session = response.get_response().read()
+        usuario_json = json.loads(usuario_session)
+        usuario = {'idUsuario': usuario_json['idUsuario'],
+                    'nombre': usuario_json['nombre'],
+                    'email': usuario_json['email'],
+                    'rol': usuario_json['rol']}
         session['usuario'] = usuario
+        print(usuario)
 
-        #url_weather = url_client + "/IWeb/weather/"
+        #url_weather = url_server + "/IWeb/weather/"
         #response_weather = Connection(url_weather)
         #data_weather = json.loads(response_weather.get_response().read())
         #print(data_weather)
@@ -37,12 +64,12 @@ def home():
     except RuntimeError as exc:
         mensaje, codigo = exc.args
         return render_template("error.html", mensaje=mensaje, codigo=codigo)
-    return render_template('index.html',logUser=json.loads(usuario),url_client=url_cliente)#,weather=data_weather)
+    return render_template('index.html',logUser=usuario,url_client=url_cliente)#,weather=data_weather)
 
 @app.route('/home/') #, methods=['GET', 'POST'])
 def home_home():
     usuario = session['usuario']
-    return render_template('index.html',logUser=json.loads(usuario),url_client=url_cliente)
+    return render_template('index.html',logUser=usuario,url_client=url_cliente)
 
 
 @app.route('/email', methods=['GET', 'POST'])
@@ -52,7 +79,7 @@ def home_email():
         response = request.form
         email = response['email']
         try:
-            url = url_client + "/IWeb/webresources/entity.usuario/email/" + str("\""+ email + "\"")
+            url = url_server + "/IWeb/webresources/entity.usuario/email/" + str("\""+ email + "\"")
             print(url)
             response = Connection(url)
             #if response.get_type_response() == "application/xml":
@@ -65,20 +92,45 @@ def home_email():
             print(mensaje)
             print(codigo)
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
-        session['usuario'] = usuario
-    return render_template('index.html',logUser=json.loads(usuario),url_client=url_cliente)
+        usuario_json = json.loads(usuario)
+        usuario_session = {'idUsuario': usuario_json['idUsuario'],
+                    'nombre': usuario_json['nombre'],
+                    'email': usuario_json['email'],
+                    'rol': usuario_json['rol']}
+        print(usuario_session)
+        session['usuario'] = usuario_session
+    return render_template('index.html',logUser=usuario_session,url_client=url_cliente)
 
 
 @app.route("/profile/")
 def profile():
     comentarioList = list()
+    if 'usuario' not in session:
+        try:
+            url = url_server + "/IWeb/webresources/entity.usuario/0"
+            response = Connection(url)
+            usuario = response.get_response().read()
+            usuario_json = json.loads(usuario)
+            usuario_session = {'idUsuario': usuario_json['idUsuario'],
+                        'nombre': usuario_json['nombre'],
+                        'email': usuario_json['email'],
+                        'rol': usuario_json['rol']}
+            print(usuario_session)
+            session['usuario'] = usuario_session
+        except RuntimeError as exc:
+            mensaje, codigo = exc.args
+            return render_template("error.html", mensaje=mensaje, codigo=codigo)
+
     if 'usuario' in session:
         usuario = session['usuario']
-        userId = json.loads(usuario)
+        print(usuario)
+        userId = usuario
+
         try:
-            url = url_client + "/IWeb/webresources/entity.comentario/email/" + str("\""+ userId['email'] + "\"")
+            url = url_server + "/IWeb/webresources/entity.comentario/email/" + str("\""+ userId['email'] + "\"")
             print("La url es : " + url)
             response = Connection(url)
+
             print("Response: " + str(response))
             if response.get_type_response() == "application/xml":
                 xmlToJson = ListCommentaryXmlToJson(response.get_response())
@@ -86,36 +138,53 @@ def profile():
             elif response.get_type_response() == "application/json":
                 comentarioList = response.get_response().read()
             print("Cantidad de comentarios: " + str(len(comentarioList)))
-            url = url_client + "/IWeb/webresources/entity.comentario/count/" + str(userId['idUsuario'])
+            url = url_server + "/IWeb/webresources/entity.comentario/count/" + str(userId['idUsuario'])
             response = Connection(url)
             quantity = response.get_response().read()
             comentarios = json.loads(quantity)['total']
             print(comentarios)
             if comentarios == 0:
-                    url = url_client + "/IWeb/webresources/entity.comentario/0"
+                    url = url_server + "/IWeb/webresources/entity.comentario/0"
                     response = Connection(url)
                     comentarioList = response.get_response().read()
+
+            try:
+                url = url_server + "/IWeb/webresources/entity.usuario/photo/" + str(userId['idUsuario'])
+                response = Connection(url)
+                photo = bytearray.fromhex(json.loads(response.get_response().read())['photo'])
+                print('El tipo de photo es : ' + str(type(photo)))
+            except RuntimeError as exc:
+                mensaje, codigo = exc.args
+                return render_template("error.html", mensaje=mensaje, codigo=codigo)
+
+
         except RuntimeError as exc:
             mensaje, codigo = exc.args
             print(mensaje)
             print(codigo)
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
-
-    return render_template("profile.html",logUser=json.loads(usuario), comentarios=json.loads(comentarioList),url_client=url_cliente)
+    return render_template("profile.html",logUser=usuario, comentarios=json.loads(comentarioList),url_client=url_cliente,url_server=url_server,photo=photo.hex())
 
 
 @app.route("/signup/", methods=['GET','POST'])
 def signup():
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template("signup.html",logUser=json.loads(usuario),url_client=url_cliente, url_server=url_client)
+    return render_template("signup.html",logUser=usuario,url_client=url_cliente, url_server=url_server)
+
+@app.route("/signup2/", methods=['GET','POST'])
+def signup2():
+    if 'usuario' in session:
+        usuario = session['usuario']
+    return render_template("signup2.html",logUser=usuario,url_client=url_cliente, url_server=url_server)
 
 
 
 @app.route('/bicilane/') #, methods=['GET', 'POST'])
 def lane():
+
     try:
-        response = Connection(url_client + '/opendata/api/bicilane/point')
+        response = Connection(url_server + '/opendata/api/bicilane/point')
     except RuntimeError as exc:
             mensaje, codigo = exc.args
             print(mensaje)
@@ -124,18 +193,18 @@ def lane():
     lane = response.get_response().read()
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template('lane.html',lista=json.loads(lane),logUser=json.loads(usuario),url_client=url_cliente)  #, usuarios=json.loads(usuarios))
+    return render_template('lane.html',lista=json.loads(lane),logUser=usuario,url_client=url_cliente)
 
 @app.route('/bicilane/lane/<int:id>') #, methods=['GET', 'POST'])
 def find_lane_by_id(id):
     try:
-        url = url_client + '/opendata/api/bicilane/find_by_ogc_fid/' + str(id)
+        url = url_server + '/opendata/api/bicilane/find_by_ogc_fid/' + str(id)
         response = Connection(url)
         lane = response.get_response().read()
-        url2 = url_client + '/opendata/api/bicilane/get_list_coordinates/' + str(id+1)
+        url2 = url_server + '/opendata/api/bicilane/get_list_coordinates/' + str(id+1)
         response = Connection(url2)
         coordinates = response.get_response().read()
-        url3 = url_client + '/opendata/api/bicilane/get_description/' + str(id+1)
+        url3 = url_server + '/opendata/api/bicilane/get_description/' + str(id+1)
         response = Connection(url3)
         description = response.get_response().read()
     except RuntimeError as exc:
@@ -145,7 +214,7 @@ def find_lane_by_id(id):
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template('detail_lane.html',bicilane=json.loads(lane),coordinates=json.loads(coordinates),description=json.loads(description),logUser=json.loads(usuario),url_client=url_cliente)
+    return render_template('detail_lane.html',bicilane=json.loads(lane),coordinates=json.loads(coordinates),description=json.loads(description),logUser=usuario,url_client=url_cliente)
 
 
 # Aparcamientos de bici
@@ -154,7 +223,7 @@ def find_lane_by_id(id):
 @app.route('/bicipark/') #, methods=['GET', 'POST'])
 def parking():
     try:
-        response = Connection(url_client + '/opendata/api/bicipark')
+        response = Connection(url_server + '/opendata/api/bicipark')
     except RuntimeError as exc:
             mensaje, codigo = exc.args
             print(mensaje)
@@ -164,14 +233,14 @@ def parking():
 
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template('parking.html',lista=json.loads(parking),logUser=json.loads(usuario),url_client=url_cliente)
+    return render_template('parking.html',lista=json.loads(parking),logUser=usuario,url_client=url_cliente)
 
 @app.route('/bicipark/parking/<int:id>') #, methods=['GET', 'POST'])
 def find_parking_by_id(id):
     if 'usuario' in session:
         usuario = session['usuario']
 
-    url = url_client + '/opendata/api/bicipark/find_by_ogc_fid/' + str(id)
+    url = url_server + '/opendata/api/bicipark/find_by_ogc_fid/' + str(id)
     try:
         response = Connection(url)
     except RuntimeError as exc:
@@ -180,7 +249,7 @@ def find_parking_by_id(id):
             print(codigo)
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
     parking = response.get_response().read()
-    return render_template('detail_parking.html',biciparking=json.loads(parking),logUser=json.loads(usuario),url_client=url_cliente)
+    return render_template('detail_parking.html',biciparking=json.loads(parking),logUser=usuario,url_client=url_cliente)
 
 
 
