@@ -23,7 +23,7 @@
     <div class="navbar">
         <div class="navbar-inner">
           <a class="brand" href="{{url_client}}/home/">Home</a>
-          <a class="brand" href="{{url_client}}/bicilane/">Bici Lanes</a>  
+          <a class="brand" href="{{url_client}}/bicilane/">Bici Lanes</a>
           <a class="brand" href="{{url_client}}/bicipark/">Bici Parkings</a>
           <a class="brand" href="{{url_client}}/profile/"> {{logUser['rol']}} : {{logUser['nombre']}} </a>
         </div>
@@ -69,6 +69,79 @@
           L.marker([{{coordinates[0]['latitud']}},{{coordinates[0]['longitud']}}]).addTo(mymap).bindPopup("<b>{{bicilane['name']}}</b><br />{{ bicilane['description'][0]['kilometers']}} kms <br /> Latitude: {{coordinates[0]['latitud']}} <br /> Longitude: {{coordinates[0]['longitud']}}").openPopup();
         </script>
     </div>
+    <p id="resultado"></p>
+    <div id="formcom" class="container">
+        <div class="span3">
+            <h2>Sign Up</h2>
+            <form  id="comenForm" onSubmit="return false" method="POST">
+                <form action="/action_page.php">
+                  <label for="message">Commentary</label>
+                  <input type="text" id="message"/>
+                  <input type="button" id="publish" onclick="publicar()" value="Publish"
+                    class="btn btn-primary pull-right">
+                <div class="clearfix">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <input type="hidden" id="id_user" name="id_user" value="{{logUser['idUsuario']}}">
+    <input type="hidden" id="long" name="id_user" value="{{coordinates[0]['latitud']}}">
+    <input type="hidden" id="lat" name="id_user" value="{{coordinates[0]['longitud']}}">
+
+    <script >
+      function publicar()
+      {
+        document.getElementById("resultado").innerHTML = "";
+
+        var urlSaveComm = '{{url_server}}/IWeb/webresources/entity.comentario/';
+        var contenido = document.getElementById('message').value;
+        var id = document.getElementById('id_user').value;
+        var longitud = document.getElementById('long').value;
+        var latitud = document.getElementById('lat').value;
+
+        if(contenido == "")
+        {
+          document.getElementById("resultado").innerHTML = "Error: no commentary";
+          return;
+        }
+
+        console.log('Url post:' + urlSaveComm);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', urlSaveComm);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Access-Control-Allow-Origin','*');
+
+
+
+
+        var obj = {contenido: contenido, idUsuario: id, latitud: latitud, longitud: longitud, tipoDato: "Lane"};
+        var datajson = JSON.stringify(obj);
+        console.log(datajson)
+        xhr.send(datajson);
+
+        xhr.onload = function()
+        {
+          if (xhr.status == 201)
+          {
+
+            document.getElementById("resultado").innerHTML = "Succesful";
+          }
+          else if(xhr.status == 400)
+          {
+            var error = xhr.response;
+
+            document.getElementById("resultado").innerHTML = "Error: the email is already registered";
+          }
+          else
+          {
+            console.log('Error: status code:' + xhr.status);
+          }
+        };
+      }
+    </script>
+
     <script type="text/javascript">    </script>
 </body>
 </html>

@@ -214,7 +214,7 @@ def find_lane_by_id(id):
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
     if 'usuario' in session:
         usuario = session['usuario']
-    return render_template('detail_lane.html',bicilane=json.loads(lane),coordinates=json.loads(coordinates),description=json.loads(description),logUser=usuario,url_client=url_cliente)
+    return render_template('detail_lane.html',bicilane=json.loads(lane),coordinates=json.loads(coordinates),description=json.loads(description),logUser=usuario,url_client=url_cliente,url_server=url_server)
 
 
 # Aparcamientos de bici
@@ -249,7 +249,7 @@ def find_parking_by_id(id):
             print(codigo)
             return render_template("error.html", mensaje=mensaje, codigo=codigo)
     parking = response.get_response().read()
-    return render_template('detail_parking.html',biciparking=json.loads(parking),logUser=usuario,url_client=url_cliente)
+    return render_template('detail_parking.html',biciparking=json.loads(parking),logUser=usuario,url_client=url_cliente,url_server=url_server)
 
 
 
